@@ -4,23 +4,27 @@ from flask import Flask, abort, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
-from .database.models import Actors, Movies, db_drop_and_create_all, setup_db
+from database.models import Actors, Movies, db_drop_and_create_all, setup_db
 
 
-def create_app(test_config=None):
-  # create and configure the app
-  app = Flask(__name__)
-  setup_db(app)
-  
-  """
-  Uncomment these to reset the database
-  """
-  # with app.app_context():
-  #   db_drop_and_create_all()
+def create_app(db_URI="", test_config=None):
+    # create and configure the app
+    app = Flask(__name__)
 
-  CORS(app)
+    if db_URI:
+        setup_db(app, db_URI)
+    else:
+        setup_db(app)  
+        
+    """
+    Uncomment these to reset the database
+    """
+    # with app.app_context():
+    #   db_drop_and_create_all()
 
-  return app
+    CORS(app)
+
+    return app
 
 APP = create_app()
 
