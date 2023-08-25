@@ -81,6 +81,56 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
 
+    
+    # Test for the "/actors" DELETE endpoint and for a possible error
+    def test_delete_actor(self):
+        actor_id = 2
+        res = self.client().delete(f'/actors/{actor_id}')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        # Make sure the response is correct
+        self.assertEqual(data['deleted'], str(actor_id))
+        self.assertTrue(data['total_actors'])
+        # Make sure it was actually deleted from the database
+        with self.app.app_context():
+            deleted = Actor.query.get(actor_id)
+        self.assertEqual(deleted, None)
+
+    def test_404_delete_nonexistent_actor(self):
+        res = self.client().delete('/actors/1000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+ 
+
+    # Test for the "/movies" DELETE endpoint and for a possible error
+    def test_delete_movie(self):
+        movie_id = 2
+        res = self.client().delete(f'/movies/{movie_id}')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        # Make sure the response is correct
+        self.assertEqual(data['deleted'], str(movie_id))
+        self.assertTrue(data['total_movies'])
+        # Make sure it was actually deleted from the database
+        with self.app.app_context():
+            deleted = Movie.query.get(movie_id)
+        self.assertEqual(deleted, None)
+    
+    def test_404_delete_nonexistent_movie(self):
+        res = self.client().delete('/movies/1000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+
 
 
 # Make the tests conveniently executable

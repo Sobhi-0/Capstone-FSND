@@ -79,6 +79,51 @@ def create_app(db_URI="", test_config=None):
             abort(500)
 
 
+    @app.route('/actors/<actor_id>', methods=['DELETE'])
+    def delete_actor(actor_id):
+        actor = Actor.query.get(actor_id)
+
+        # If the actor doesn't exist it raises an error
+        if actor is None:
+            abort(404)
+
+        try:
+            actor.delete()
+
+            actors = Actor.query.all()
+
+            return jsonify({
+                'success': True,
+                'deleted': actor_id,
+                'total_actors': len(actors)
+            })
+        except:
+            # If any error occurs
+            abort(422)
+
+
+    @app.route('/movies/<movie_id>', methods=['DELETE'])
+    def delete_movie(movie_id):
+        movie = Movie.query.get(movie_id)
+
+        # If the movie doesn't exist it raises an error
+        if movie is None:
+            abort(404)
+
+        try:
+            movie.delete()
+
+            movies = Movie.query.all()
+
+            return jsonify({
+                'success': True,
+                'deleted': movie_id,
+                'total_movies': len(movies)
+            })
+        except:
+            # If any error occurs
+            abort(422)
+
     
 
 
@@ -92,7 +137,7 @@ def create_app(db_URI="", test_config=None):
                 "success": False,
                 "error": 400,
                 "message": "bad request"
-            }), 404)
+            }), 400)
 
     @app.errorhandler(404)
     def not_found(error):
