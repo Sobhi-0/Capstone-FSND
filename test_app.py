@@ -5,7 +5,7 @@ import unittest
 from flask_sqlalchemy import SQLAlchemy
 
 from app import create_app
-from database.models import Actors, Movies, db
+from database.models import Actor, Movie, db
 
 
 class CapstoneTestCase(unittest.TestCase):
@@ -19,10 +19,10 @@ class CapstoneTestCase(unittest.TestCase):
 
 
         # Populate the database with test data
-        movie1 = Movies(title='Movie 1', release_date='2022-01-01')
-        movie2 = Movies(title='Movie 2', release_date='2022-02-01')
-        actor1 = Actors(name='Actor 1', age=30, gender='Male')
-        actor2 = Actors(name='Actor 2', age=25, gender='Female')
+        movie1 = Movie(title='Movie 1', release_date='2022-01-01')
+        movie2 = Movie(title='Movie 2', release_date='2022-02-01')
+        actor1 = Actor(name='Actor 1', age=30, gender='Male')
+        actor2 = Actor(name='Actor 2', age=25, gender='Female')
     
         with self.app.app_context():
             movie1.insert()
@@ -38,12 +38,23 @@ class CapstoneTestCase(unittest.TestCase):
             self.db.drop_all()
             self.db.session.commit()
 
-    def test_print(self):
-        with self.app.app_context():
-            data = Movies.query.all()
-        print(data)
-        self.assertEqual(len(data),2)
+    # Test the "/actors" endpoint to handle GET requests
+    def test_get_actors(self):
+        res = self.client().get('/actors')
+        data = json.loads(res.data)
 
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)      
+        self.assertTrue(len(data['actors']))  
+
+    # Test the "/movies" endpoint to handle GET requests
+    def test_get_movies(self):
+        res = self.client().get('/movies')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)      
+        self.assertTrue(len(data['movies']))  
 
 
 # Make the tests conveniently executable
