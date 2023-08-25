@@ -44,8 +44,11 @@ class CapstoneTestCase(unittest.TestCase):
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)      
+        self.assertEqual(data['success'], True)   
+        # Make sure the response is correct
         self.assertTrue(len(data['actors']))  
+        self.assertTrue(data['total_actors'])  
+        self.assertTrue(data['current_page'])  
 
     # Test the "/movies" endpoint to handle GET requests
     def test_get_movies(self):
@@ -54,7 +57,10 @@ class CapstoneTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)      
+        # Make sure the response is correct
         self.assertTrue(len(data['movies']))  
+        self.assertTrue(data['total_movies'])  
+        self.assertTrue(data['current_page'])  
 
 
 # Make the tests conveniently executable
