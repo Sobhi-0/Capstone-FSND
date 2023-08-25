@@ -34,10 +34,10 @@ def db_drop_and_create_all():
     db.create_all()
 
     # Add some initial data
-    movie1 = Movies(title='Movie 1', release_date='2022-01-01')
-    movie2 = Movies(title='Movie 2', release_date='2022-02-01')
-    actor1 = Actors(name='Actor 1', age=30, gender='Male')
-    actor2 = Actors(name='Actor 2', age=25, gender='Female')
+    movie1 = Movie(title='Movie 1', release_date='2022-01-01')
+    movie2 = Movie(title='Movie 2', release_date='2022-02-01')
+    actor1 = Actor(name='Actor 1', age=30, gender='Male')
+    actor2 = Actor(name='Actor 2', age=25, gender='Female')
 
     movie1.insert()
     movie2.insert()
@@ -45,7 +45,7 @@ def db_drop_and_create_all():
     actor2.insert()
 
 
-class Movies(db.Model):
+class Movie(db.Model):
     __tablename__ = 'movies'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -67,8 +67,15 @@ class Movies(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def format(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'release_date': self.release_date
+        }
 
-class Actors(db.Model):
+
+class Actor(db.Model):
     __tablename__ = 'actors'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -91,3 +98,11 @@ class Actors(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+    def format(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'age': self.age,
+            'gender': self.gender
+        }
