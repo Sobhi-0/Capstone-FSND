@@ -41,7 +41,7 @@ In the root directory run the following commands:
 bash:
 
 ```bash
-export FLASK_APP=app.py
+export FLASK_APP=app
 export FLASK_ENV=development
 flask run --reload`
 ```
@@ -50,7 +50,7 @@ flask run --reload`
 or PowerShell:
 
 ```PS
-$env:FLASK_APP="app.py"
+$env:FLASK_APP="app"
 $env:FLASK_DEBUG="true"
 flask run --reload`
 ```

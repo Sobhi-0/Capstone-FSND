@@ -3,11 +3,11 @@ aniso8601==9.0.1
 blinker==1.6.2
 click==8.1.7
 colorama==0.4.6
-flask==2.3.3
-Flask-Cors==4.0.0
-Flask-Migrate==4.0.4
-Flask-RESTful==0.3.10
-flask-sqlalchemy==3.0.5
+flask
+Flask-Cors
+Flask-Migrate
+Flask-RESTful
+flask-sqlalchemy
 greenlet==2.0.2
 importlib-metadata==6.8.0
 importlib-resources==6.0.1
