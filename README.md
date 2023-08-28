@@ -117,15 +117,14 @@ Errors that might be returned:
 
 -422: Not Processable
 
-
 ## Endpoint Library
 
-GET /actors | GET /movies
+GET /actors  |  GET /movies
 -
 
 The response indicates the succes of the request and retreaves a list of all actors/movies paginated and limited to 10 actors/movies per page.
 
-- Request Arguments: (optional) ```/?page=<page_number>```
+- Request Arguments (optional): ```/?page=<page_number>```
 - Returns: The list of actors/movies with a maximum of 10 actors/movies each actor with (id, name, gender, age), each movie with (id, title, release_date)
 Total number of actors/movies
 Current page number
@@ -158,7 +157,7 @@ Response Example:
 }
 ```
 
-DELETE /actor/<actor_id> | DELETE /movie/<movie_id>
+DELETE /actor/<actor_id>  |  DELETE /movie/<movie_id>
 -
 
 Deletes the actor/movie of the given ID
@@ -182,7 +181,7 @@ Response Example:
 }
 ```
 
-POST /actors | POST /movies
+POST /actors  |  POST /movies
 -
 
 Add a new actor/movie
@@ -209,6 +208,8 @@ Response Example:
 ```
 
 PATCH /actor/<actor_id> | PATCH /movie/<movie_id>
+-
+
 Updates an existing actor/movie partially
 
 - Request Arguments (at least one of the following):
