@@ -61,7 +61,7 @@ If you get an error ```ModuleNotFoundError``` instead of running ```flask run --
 
 ### Getting Started
 
-Base URL (hosted on Render): ```######################``` || (while running locally) :  ```https://localhost:5000/```
+Base URL (hosted on Render): ```https://capstone-fsnd.onrender.com``` || (while running locally) :  ```https://localhost:5000/```
 
 Authentication
 -
@@ -119,6 +119,22 @@ Errors that might be returned:
 
 ## Endpoint Library
 
+GET /health
+-
+
+Shows the state of the application.
+
+```bash
+curl https://capstone-fsnd.onrender.com/health
+```
+
+Response Example:
+
+```JSON
+Up and Running!
+```
+
+
 GET /actors  |  GET /movies
 -
 
@@ -132,7 +148,7 @@ Current page number
 Request URL example:
 
 ```bash
-curl -H "Authorization: Bearer $TOKEN" ######################/movies?page=2
+curl -H "Authorization: Bearer $TOKEN" https://capstone-fsnd.onrender.com/movies?page=2
 ```
 
 Response Example:
@@ -168,7 +184,7 @@ Deletes the actor/movie of the given ID
 Request URL example:
 
 ```bash
-curl -X DELETE -H "Authorization: Bearer $TOKEN" ######################/movies/5
+curl -X DELETE -H "Authorization: Bearer $TOKEN" https://capstone-fsnd.onrender.com/movies/5
 ```
 
 Response Example:
@@ -194,7 +210,7 @@ Add a new actor/movie
 Request URL example:
 
 ```bash
-curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" -d '{"name": "Leonardo DiCaprio", "age": 48, "gender": "Male"}' ######################/actors
+curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" -d '{"name": "Leonardo DiCaprio", "age": 48, "gender": "Male"}' https://capstone-fsnd.onrender.com/actors
 ```
 
 Response Example:
@@ -220,7 +236,7 @@ Updates an existing actor/movie partially
 Request URL example:
 
 ```bash
-curl -X PATCH -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" -d '{"age": 22}' ######################/actors/3
+curl -X PATCH -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" -d '{"age": 22}' https://capstone-fsnd.onrender.com/actors/3
 ```
 
 Response Example:
