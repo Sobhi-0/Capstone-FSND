@@ -2,7 +2,7 @@
 
 Project Casting Agency Site -- Final project to complete the Full Stack Nanodegree from Udacity
 
-In the application you can:
+In this application you can:
 
 1. Dispaly Actors/Movies
 2. Delete Actors/Movies
@@ -162,8 +162,8 @@ DELETE /actor/<actor_id>  |  DELETE /movie/<movie_id>
 
 Deletes the actor/movie of the given ID
 
-- Request Arguments: ```/<id>```
-- Returns: ID of the deleted ID with the total number of remaining items
+- Request Arguments: ```/<item_id>```
+- Returns: ID of the deleted item with the total number of remaining items
 
 Request URL example:
 

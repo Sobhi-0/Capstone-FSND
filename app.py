@@ -37,6 +37,10 @@ def create_app(db_URI="", test_config=None):
 
     CORS(app)
 
+    @app.route('/health')
+    def health():
+        return "Up and Running!"
+
     @app.route('/actors', methods=['GET'])
     def get_actors():
         actors = Actor.query.order_by(Actor.id).all()
