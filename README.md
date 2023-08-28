@@ -1,8 +1,9 @@
 # Capstone-FSND
+
 Project Casting Agency Site -- Final project to complete the Full Stack Nanodegree from Udacity
 
-
 In the application you can:
+
 1. Dispaly Actors/Movies
 2. Delete Actors/Movies
 3. Add new Actors/Movies
@@ -13,6 +14,7 @@ We are always working on enchancing the users' experience and we are always welc
 ## Want to fix a bug? Or perhaps, add a feature?
 
 If you are intrested in contributing into improving our application then kindly read the following:
+
 - Follow the PEP8 style guide
 - Our API follows the RESTFull principles
 
@@ -25,9 +27,11 @@ To install the ```requirements``` , in the root directory run ```pip install -r 
 ### Backend
 
 To run the application locally
-Note: you can create a local Postgres database for the main app to run using the command ```createdb capstone``` and update the URI for the database in the code, you MUST have a local database for tests(test_app.py), use the command ```createdb capstone_test```.
+
+Note 1: you can create a local Postgres database for the main app to run using the command ```createdb capstone``` and update the URI for the database in the code, you MUST have a local database for tests(test_app.py), use the command ```createdb capstone_test```.
 
 Note 2: On the first run in ```app.py``` uncomment these two lines:
+
 ```python
 with app.app_context():
    db_drop_and_create_all()
@@ -35,13 +39,16 @@ with app.app_context():
 
 In the root directory run the following commands:
 bash:
+
 ```bash
 export FLASK_APP=app.py
 export FLASK_ENV=development
 flask run --reload`
 ```
+
 ===================================
 or PowerShell:
+
 ```PS
 $env:FLASK_APP="app.py"
 $env:FLASK_DEBUG="true"
@@ -53,13 +60,15 @@ If you get an error ```ModuleNotFoundError``` instead of running ```flask run --
 ## API Documentation
 
 ### Getting Started
+
 Base URL (hosted on Render): ```######################``` || (while running locally) :  ```https://localhost:5000/```
 
 Authentication
 -
-There is three roles in this application and it is required to have the apropiate role to use the endpoints.
+
+There is three roles in this application and it is required to have the apropiate role to use the endpoints
 Roles:
--
+
     Casting Assistant:
         Can view actors and movies
     Casting Director:
@@ -71,16 +80,21 @@ Roles:
         Add or delete a movie from the database
 
 You need to set the environment variable to use with your Bearer token:
+
 bash:
+
 ```bash
 export TOKEN=YOUR_TOKEN
 ```
+
 or PowerShell:
+
 ```PS
 $env:TOKEN=YOUR_TOKEN
 ```
 
 ### Error Handling
+
 We are using HTTP response codes to indicate the success or failure of an API request. The responses are formated in JSON indicating that a failure happend and showing the error code and message.
 
 Example:
@@ -94,16 +108,23 @@ Example:
 ```
 
 Errors that might be returned:
+
 -400: Bad Request
+
 -404: Resource Not Found
+
 -405: Method Not Allowed
+
 -422: Not Processable
 
-### Endpoint Library
+
+## Endpoint Library
 
 GET /actors | GET /movies
 -
+
 The response indicates the succes of the request and retreaves a list of all actors/movies paginated and limited to 10 actors/movies per page.
+
 - Request Arguments: (optional) ```/?page=<page_number>```
 - Returns: The list of actors/movies with a maximum of 10 actors/movies each actor with (id, name, gender, age), each movie with (id, title, release_date)
 Total number of actors/movies
@@ -116,6 +137,7 @@ curl -H "Authorization: Bearer $TOKEN" ######################/movies?page=2
 ```
 
 Response Example:
+
 ```JSON
 {
   "current_page": 2,
@@ -138,7 +160,9 @@ Response Example:
 
 DELETE /actor/<actor_id> | DELETE /movie/<movie_id>
 -
+
 Deletes the actor/movie of the given ID
+
 - Request Arguments: ```/<id>```
 - Returns: ID of the deleted ID with the total number of remaining items
 
@@ -160,7 +184,9 @@ Response Example:
 
 POST /actors | POST /movies
 -
+
 Add a new actor/movie
+
 - Request Arguments:
     for a new actor: name, gender, age
     for a new movie: title, release_date
@@ -184,6 +210,7 @@ Response Example:
 
 PATCH /actor/<actor_id> | PATCH /movie/<movie_id>
 Updates an existing actor/movie partially
+
 - Request Arguments (at least one of the following):
     for a new actor: name, gender, age
     for a new movie: title, release_date
