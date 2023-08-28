@@ -9,6 +9,7 @@ Flask-Migrate
 Flask-RESTful
 flask-sqlalchemy
 greenlet
+gunicorn
 importlib-metadata
 importlib-resources
 itsdangerous
