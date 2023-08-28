@@ -125,7 +125,53 @@ def create_app(db_URI="", test_config=None):
             abort(422)
 
     
+    @app.route('/actors', methods=['POST'])
+    def add_actor():
+        body = request.get_json()
 
+        name = body.get('name')
+        age = body.get('age')
+        gender = body.get('gender')
+
+        # To make sure all the fields are provided in the request
+        if name is None or age is None or gender is None:
+            abort(400)
+
+        try:
+            new_actor = Actor(name=name, age=age, gender=gender)
+            new_actor.insert()
+
+            return jsonify({
+                'success': True,
+                'added': new_actor.id,
+                'total_actors': len(Actor.query.all())
+            })
+        except:
+            abort(422)
+
+
+    @app.route('/movies', methods=['POST'])
+    def add_movie():
+        body = request.get_json()
+
+        title = body.get('title')
+        release_date = body.get('release_date')
+
+        # To make sure all the fields are provided in the request
+        if title is None or release_date is None:
+            abort(400)
+
+        try:
+            new_movie = Movie(title=title, release_date=release_date)
+            new_movie.insert()
+
+            return jsonify({
+                'success': True,
+                'added': new_movie.id,
+                'total_movies': len(Movie.query.all())
+            })
+        except:
+            abort(422)
 
 
 

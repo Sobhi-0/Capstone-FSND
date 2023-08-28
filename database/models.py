@@ -34,45 +34,47 @@ def db_drop_and_create_all():
     db.create_all()
 
     # Add some initial data
-    movie1 = Movie(title='Movie 1', release_date='2022-01-01')
-    movie2 = Movie(title='Movie 2', release_date='2022-02-01')
-    actor1 = Actor(name='Actor 1', age=30, gender='Male')
-    actor2 = Actor(name='Actor 2', age=25, gender='Female')
+    actors = [
+        Actor(name='Meryl Streep', age=72, gender='Female'),
+        Actor(name='Tom Hanks', age=65, gender='Male'),
+        Actor(name='Robert Downey Jr.', age=56, gender='Male'),
+        Actor(name='Scarlett Johansson', age=37, gender='Female'),
+        Actor(name='Brad Pitt', age=58, gender='Male'),
+        Actor(name='Jennifer Lawrence', age=31, gender='Female'),
+        Actor(name='Johnny Depp', age=58, gender='Male'),
+        Actor(name='Emma Watson', age=31, gender='Female'),
+        Actor(name='Denzel Washington', age=66, gender='Male'),
+        Actor(name='Gal Gadot', age=36, gender='Female'),
+        Actor(name='Chris Hemsworth', age=38, gender='Male'),
+        Actor(name='Angelina Jolie', age=46, gender='Female'),
+        Actor(name='Will Smith', age=53, gender='Male'),
+        Actor(name='Natalie Portman', age=40, gender='Female'),
+        Actor(name='Keanu Reeves', age=57, gender='Male'),
+        Actor(name='Jennifer Aniston', age=52, gender='Female')
+    ]
+    for actor in actors:
+        actor.insert()
 
-    movie1.insert()
-    movie2.insert()
-    actor1.insert()
-    actor2.insert()
-
-
-class Movie(db.Model):
-    __tablename__ = 'movies'
-
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255), nullable=False)
-    release_date = db.Column(db.Date, nullable=False)
-
-    def __init__(self, title, release_date):
-        self.title = title
-        self.release_date = release_date
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-    
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    def format(self):
-        return {
-            'id': self.id,
-            'title': self.title,
-            'release_date': self.release_date
-        }
+    movies = [
+        Movie(title='Inception', release_date='2010-07-16'),
+        Movie(title='The Shawshank Redemption', release_date='1994-09-23'),
+        Movie(title='Pulp Fiction', release_date='1994-10-14'),
+        Movie(title='The Dark Knight', release_date='2008-07-18'),
+        Movie(title='Forrest Gump', release_date='1994-07-06'),
+        Movie(title='The Matrix', release_date='1999-03-31'),
+        Movie(title='The Godfather', release_date='1972-03-24'),
+        Movie(title='Star Wars: Episode IV - A New Hope', release_date='1977-05-25'),
+        Movie(title='The Lord of the Rings: The Fellowship of the Ring', release_date='2001-12-19'),
+        Movie(title='Avengers: Endgame', release_date='2019-04-26'),
+        Movie(title='Jurassic Park', release_date='1993-06-11'),
+        Movie(title='Avatar', release_date='2009-12-18'),
+        Movie(title='E.T. the Extra-Terrestrial', release_date='1982-06-11'),
+        Movie(title='Deadp0ool', release_date='2016-02-12'),
+        Movie(title='The Lion King', release_date='1994-06-24'),
+        Movie(title='The Avengers', release_date='2012-05-04')
+    ]
+    for movie in movies:
+        movie.insert()
 
 
 class Actor(db.Model):
@@ -105,4 +107,34 @@ class Actor(db.Model):
             'name': self.name,
             'age': self.age,
             'gender': self.gender
+        }
+
+
+class Movie(db.Model):
+    __tablename__ = 'movies'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    release_date = db.Column(db.Date, nullable=False)
+
+    def __init__(self, title, release_date):
+        self.title = title
+        self.release_date = release_date
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+    
+    def update(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def format(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'release_date': self.release_date
         }

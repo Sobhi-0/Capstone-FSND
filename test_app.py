@@ -5,7 +5,7 @@ import unittest
 from flask_sqlalchemy import SQLAlchemy
 
 from app import create_app
-from database.models import Actor, Movie, db
+from database.models import Actor, Movie, db, db_drop_and_create_all
 
 
 class CapstoneTestCase(unittest.TestCase):
@@ -17,19 +17,30 @@ class CapstoneTestCase(unittest.TestCase):
         self.client = self.app.test_client
         self.db = db
 
-
         # Populate the database with test data
-        movie1 = Movie(title='Movie 1', release_date='2022-01-01')
-        movie2 = Movie(title='Movie 2', release_date='2022-02-01')
-        actor1 = Actor(name='Actor 1', age=30, gender='Male')
-        actor2 = Actor(name='Actor 2', age=25, gender='Female')
-    
         with self.app.app_context():
-            movie1.insert()
-            movie2.insert()
-            actor1.insert()
-            actor2.insert()
+            db_drop_and_create_all()
 
+        # Data to be added when test POST endpoints
+        self.valid_new_actor = {
+            'name': 'Leonardo DiCaprio',
+            'age': 48,
+            'gender': 'Male'
+        }
+
+        self.valid_new_movie = {
+            'title': 'Titanic',
+            'release_date': '1997-12-19'
+        }
+
+        self.invalid_new_actor = {
+            'name': 'Leonardo DiCaprio',
+            'age': 48
+        }
+
+        self.invalid_new_movie = {
+            'title': 'Titanic'
+        }
 
     def tearDown(self):
         """Executed after reach test"""
@@ -132,6 +143,42 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'resource not found')
 
 
+    # Test for the "/actors" POST endpoint and for a possible error
+    def test_adding_actor(self):
+        res = self.client().post('/actors', json=self.valid_new_actor)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['added'])
+        self.assertTrue(data['total_actors'])
+
+    def test_405_adding_actor_with_invalid_request(self):
+        res = self.client().post('/actors', json=self.invalid_new_actor)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'bad request')
+
+
+    # Test for the "/movies" POST endpoint and for a possible error
+    def test_adding_movie(self):
+        res = self.client().post('/movies', json=self.valid_new_movie)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['added'])
+        self.assertTrue(data['total_movies'])
+
+    def test_405_adding_movie_with_invalid_request(self):
+        res = self.client().post('/movies', json=self.invalid_new_movie)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'bad request')
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
