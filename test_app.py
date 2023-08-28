@@ -42,6 +42,15 @@ class CapstoneTestCase(unittest.TestCase):
             'title': 'Titanic'
         }
 
+        self.edited_actor = {
+            'age': 35
+        }
+
+        self.edited_movie = {
+            'release_date': '2003-12-27'
+        }
+
+
     def tearDown(self):
         """Executed after reach test"""
         # Drop all tables
@@ -50,7 +59,7 @@ class CapstoneTestCase(unittest.TestCase):
             self.db.session.commit()
 
     # Test the "/actors" endpoint to handle GET requests
-    def test_get_actors(self):
+    def test_get_paginated_actors(self):
         res = self.client().get('/actors')
         data = json.loads(res.data)
 
@@ -72,7 +81,7 @@ class CapstoneTestCase(unittest.TestCase):
 
 
     # Test the "/movies" endpoint to handle GET requests
-    def test_get_movies(self):
+    def test_get_paginated_movies(self):
         res = self.client().get('/movies')
         data = json.loads(res.data)
 
@@ -179,6 +188,47 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'bad request')
+
+    
+    # Test for the "/actors" PATCH endpoint and for a possible error
+    def test_editing_actor(self):
+        actor_id = 5
+        res = self.client().patch(f'/actors/{actor_id}', json=self.edited_actor)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['updated'])
+
+    def test_404_patch_nonexistent_actor(self):
+        actor_id = 10000
+        res = self.client().patch(f'/actors/{actor_id}', json=self.edited_actor)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+
+
+    # Test for the "/movies" PATCH endpoint and for a possible error
+    def test_editing_movie(self):
+        movie_id = 5
+        res = self.client().patch(f'/movies/{movie_id}', json=self.edited_movie)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['updated'])
+
+    def test_404_patch_nonexistent_movie(self):
+        movie_id = 10000
+        res = self.client().patch(f'/movies/{movie_id}', json=self.edited_movie)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

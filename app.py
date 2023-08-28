@@ -127,8 +127,8 @@ def create_app(db_URI="", test_config=None):
     
     @app.route('/actors', methods=['POST'])
     def add_actor():
+        # gets the nessecary items from the request
         body = request.get_json()
-
         name = body.get('name')
         age = body.get('age')
         gender = body.get('gender')
@@ -152,8 +152,8 @@ def create_app(db_URI="", test_config=None):
 
     @app.route('/movies', methods=['POST'])
     def add_movie():
+        # gets the nessecary items from the request
         body = request.get_json()
-
         title = body.get('title')
         release_date = body.get('release_date')
 
@@ -172,6 +172,71 @@ def create_app(db_URI="", test_config=None):
             })
         except:
             abort(422)
+
+        
+    @app.route('/actors/<actor_id>', methods=['PATCH'])
+    def edit_actor(actor_id):
+        actor = Actor.query.get(actor_id)
+
+        # If the actor doesn't exist it raises an error
+        if actor is None:
+            abort(404)
+
+        # gets the nessecary items from the request
+        body = request.get_json()
+        name = body.get('name')
+        age = body.get('age')
+        gender = body.get('gender')
+
+        try:
+            # To make sure only the provided fields are updated
+            if name is not None:
+                actor.name = name
+            if age is not None:
+                actor.age = age
+            if gender is not None:
+                actor.gender = gender
+
+            actor.update()
+
+            return jsonify({
+                'success': True,
+                'updated': actor.format()
+            })
+        except:
+            abort(500)
+
+
+    @app.route('/movies/<movie_id>', methods=['PATCH'])
+    def edit_movie(movie_id):
+        movie = Movie.query.get(movie_id)
+
+        # If the movie doesn't exist it raises an error
+        if movie is None:
+            abort(404)
+
+        # gets the nessecary items from the request
+        body = request.get_json()
+        title = body.get('title')
+        release_date = body.get('release_date')
+
+        try:
+            # To make sure only the provided fields are updated
+            if title is not None:
+                movie.title = title
+            if release_date is not None:
+                movie.release_date = release_date
+
+            movie.update()
+
+            return jsonify({
+                'success': True,
+                'updated': movie.format()
+            })
+        except:
+            abort(500)
+
+
 
 
 
