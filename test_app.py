@@ -2,11 +2,13 @@ import json
 import os
 import unittest
 
+from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 
 from app import create_app
 from database.models import Actor, Movie, db, db_drop_and_create_all
 
+load_dotenv()
 
 class CapstoneTestCase(unittest.TestCase):
     def setUp(self):
@@ -50,6 +52,11 @@ class CapstoneTestCase(unittest.TestCase):
             'release_date': '2003-12-27'
         }
 
+        # Authorization header
+        token = os.environ.get('TOKEN')
+        self.header = {'Authorization': f'Bearer {token}'}
+
+
 
     def tearDown(self):
         """Executed after reach test"""
@@ -60,7 +67,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     # Test the "/actors" endpoint to handle GET requests
     def test_get_paginated_actors(self):
-        res = self.client().get('/actors')
+        res = self.client().get('/actors', headers=self.header)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -72,7 +79,7 @@ class CapstoneTestCase(unittest.TestCase):
     
     # Test for possible error
     def test_404_error_paginating_actors_page_beyond_available(self):
-        res = self.client().get('/actors?page=10000')
+        res = self.client().get('/actors?page=10000', headers=self.header)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
@@ -82,7 +89,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     # Test the "/movies" endpoint to handle GET requests
     def test_get_paginated_movies(self):
-        res = self.client().get('/movies')
+        res = self.client().get('/movies', headers=self.header)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -94,7 +101,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     # Test for possible error
     def test_404_error_paginating_movies_page_beyond_available(self):
-        res = self.client().get('/movies?page=10000')
+        res = self.client().get('/movies?page=10000', headers=self.header)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
@@ -105,7 +112,7 @@ class CapstoneTestCase(unittest.TestCase):
     # Test for the "/actors" DELETE endpoint and for a possible error
     def test_delete_actor(self):
         actor_id = 2
-        res = self.client().delete(f'/actors/{actor_id}')
+        res = self.client().delete(f'/actors/{actor_id}', headers=self.header)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -119,7 +126,7 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(deleted, None)
 
     def test_404_delete_nonexistent_actor(self):
-        res = self.client().delete('/actors/1000')
+        res = self.client().delete('/actors/1000', headers=self.header)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
@@ -130,7 +137,7 @@ class CapstoneTestCase(unittest.TestCase):
     # Test for the "/movies" DELETE endpoint and for a possible error
     def test_delete_movie(self):
         movie_id = 2
-        res = self.client().delete(f'/movies/{movie_id}')
+        res = self.client().delete(f'/movies/{movie_id}', headers=self.header)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -144,7 +151,7 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(deleted, None)
     
     def test_404_delete_nonexistent_movie(self):
-        res = self.client().delete('/movies/1000')
+        res = self.client().delete('/movies/1000', headers=self.header)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
@@ -154,7 +161,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     # Test for the "/actors" POST endpoint and for a possible error
     def test_adding_actor(self):
-        res = self.client().post('/actors', json=self.valid_new_actor)
+        res = self.client().post('/actors', headers=self.header, json=self.valid_new_actor)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -163,7 +170,7 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertTrue(data['total_actors'])
 
     def test_405_adding_actor_with_invalid_request(self):
-        res = self.client().post('/actors', json=self.invalid_new_actor)
+        res = self.client().post('/actors', headers=self.header, json=self.invalid_new_actor)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 400)
@@ -173,7 +180,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     # Test for the "/movies" POST endpoint and for a possible error
     def test_adding_movie(self):
-        res = self.client().post('/movies', json=self.valid_new_movie)
+        res = self.client().post('/movies', headers=self.header, json=self.valid_new_movie)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -182,7 +189,7 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertTrue(data['total_movies'])
 
     def test_405_adding_movie_with_invalid_request(self):
-        res = self.client().post('/movies', json=self.invalid_new_movie)
+        res = self.client().post('/movies', headers=self.header, json=self.invalid_new_movie)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 400)
@@ -193,7 +200,7 @@ class CapstoneTestCase(unittest.TestCase):
     # Test for the "/actors" PATCH endpoint and for a possible error
     def test_editing_actor(self):
         actor_id = 5
-        res = self.client().patch(f'/actors/{actor_id}', json=self.edited_actor)
+        res = self.client().patch(f'/actors/{actor_id}', headers=self.header, json=self.edited_actor)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -202,7 +209,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_404_patch_nonexistent_actor(self):
         actor_id = 10000
-        res = self.client().patch(f'/actors/{actor_id}', json=self.edited_actor)
+        res = self.client().patch(f'/actors/{actor_id}', headers=self.header, json=self.edited_actor)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
@@ -213,7 +220,7 @@ class CapstoneTestCase(unittest.TestCase):
     # Test for the "/movies" PATCH endpoint and for a possible error
     def test_editing_movie(self):
         movie_id = 5
-        res = self.client().patch(f'/movies/{movie_id}', json=self.edited_movie)
+        res = self.client().patch(f'/movies/{movie_id}', headers=self.header, json=self.edited_movie)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -222,7 +229,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_404_patch_nonexistent_movie(self):
         movie_id = 10000
-        res = self.client().patch(f'/movies/{movie_id}', json=self.edited_movie)
+        res = self.client().patch(f'/movies/{movie_id}', headers=self.header, json=self.edited_movie)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
