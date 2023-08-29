@@ -4,6 +4,7 @@ from flask import Flask, abort, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
+from auth.auth import AuthError, requires_auth
 from database.models import Actor, Movie, db_drop_and_create_all, setup_db
 
 ITEMS_PER_PAGE = 10
@@ -31,6 +32,7 @@ def create_app(db_URI="", test_config=None):
 
     """
     Uncomment these to reset the database
+    NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
     """
     # with app.app_context():
     #   db_drop_and_create_all()
@@ -42,7 +44,8 @@ def create_app(db_URI="", test_config=None):
         return "Up and Running!"
 
     @app.route('/actors', methods=['GET'])
-    def get_actors():
+    @requires_auth('get:actors')
+    def get_actors(jwt):
         actors = Actor.query.order_by(Actor.id).all()
         current_actors, current_page = paginate(request, actors)
 
@@ -63,7 +66,8 @@ def create_app(db_URI="", test_config=None):
 
 
     @app.route('/movies', methods=['GET'])
-    def get_movies():
+    @requires_auth('get:movies')
+    def get_movies(jwt):
         movies = Movie.query.order_by(Movie.id).all()
         current_movies, current_page = paginate(request, movies)
 
@@ -84,7 +88,8 @@ def create_app(db_URI="", test_config=None):
 
 
     @app.route('/actors/<actor_id>', methods=['DELETE'])
-    def delete_actor(actor_id):
+    @requires_auth('delete:actor')
+    def delete_actor(jwt, actor_id):
         actor = Actor.query.get(actor_id)
 
         # If the actor doesn't exist it raises an error
@@ -107,7 +112,8 @@ def create_app(db_URI="", test_config=None):
 
 
     @app.route('/movies/<movie_id>', methods=['DELETE'])
-    def delete_movie(movie_id):
+    @requires_auth('delete:movie')
+    def delete_movie(jwt, movie_id):
         movie = Movie.query.get(movie_id)
 
         # If the movie doesn't exist it raises an error
@@ -130,7 +136,8 @@ def create_app(db_URI="", test_config=None):
 
     
     @app.route('/actors', methods=['POST'])
-    def add_actor():
+    @requires_auth('post:actor')
+    def add_actor(jwt):
         # gets the nessecary items from the request
         body = request.get_json()
         name = body.get('name')
@@ -155,7 +162,8 @@ def create_app(db_URI="", test_config=None):
 
 
     @app.route('/movies', methods=['POST'])
-    def add_movie():
+    @requires_auth('post:movie')
+    def add_movie(jwt):
         # gets the nessecary items from the request
         body = request.get_json()
         title = body.get('title')
@@ -179,7 +187,8 @@ def create_app(db_URI="", test_config=None):
 
         
     @app.route('/actors/<actor_id>', methods=['PATCH'])
-    def edit_actor(actor_id):
+    @requires_auth('patch:actor')
+    def edit_actor(jwt, actor_id):
         actor = Actor.query.get(actor_id)
 
         # If the actor doesn't exist it raises an error
@@ -212,7 +221,8 @@ def create_app(db_URI="", test_config=None):
 
 
     @app.route('/movies/<movie_id>', methods=['PATCH'])
-    def edit_movie(movie_id):
+    @requires_auth('patch:movie')
+    def edit_movie(jwt, movie_id):
         movie = Movie.query.get(movie_id)
 
         # If the movie doesn't exist it raises an error
@@ -239,8 +249,6 @@ def create_app(db_URI="", test_config=None):
             })
         except:
             abort(500)
-
-
 
 
 
@@ -290,10 +298,23 @@ def create_app(db_URI="", test_config=None):
                 "message": "internal server error"
             }), 500)
 
+    @app.errorhandler(AuthError)
+    def handle_auth_error(error):
+        return jsonify({
+            'success': False,
+            'error': error.error,
+            'status_code': error.status_code
+        }), error.status_code
+
 
     return app
 
 app = create_app()
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=8080, debug=True)
+
+# To handle each Auth
+if __name__ == "__main__":
+    app.debug = True
+    app.run()
